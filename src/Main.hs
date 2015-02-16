@@ -5,6 +5,7 @@ import qualified Data.Stream as S
 import           Data.Stream (Stream(..), (<:>))
 import           Data.Char (chr, ord)
 import           System.IO (hFlush, stdout)
+import           System.Environment (getArgs)
 
 data BrainfuckCommand = GoRight      -- >
                       | GoLeft       -- <
@@ -122,7 +123,12 @@ seekLoopL b dataTape source@(Tape _ LoopR _) = seekLoopL (b+1) dataTape (moveLef
 seekLoopL b dataTape source                  = seekLoopL b dataTape (moveLeft source)
 
 main :: IO ()
-main = readFile "helloworld.bf" >>= runBrainfuck . parse
-  where parse x = case parseBrainfuck x of
-                    (Left s) -> error s
-                    (Right bs) -> bs 
+main = do
+    argv <- getArgs
+    case argv of
+        (file:_) -> do
+            readFile file >>= runBrainfuck . parse
+              where parse x = case parseBrainfuck x of
+                                (Left s) -> error s
+                                (Right bs) -> bs
+        _       -> error "bad input, it should be: brainfokt <filename.bf>"
