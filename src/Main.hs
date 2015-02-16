@@ -1,8 +1,8 @@
-{-# LANGUAGE OverloadedStrings #-}
-
 module Main where
 
-import Data.Maybe (mapMaybe)
+import           Data.Maybe (mapMaybe)
+import qualified Data.Stream as S
+import           Data.Stream (Stream(..))
 
 data BrainfuckCommand = GoRight      -- >
                       | GoLeft       -- <
@@ -12,6 +12,7 @@ data BrainfuckCommand = GoRight      -- >
                       | Read         -- ,
                       | LoopL        -- [
                       | LoopR        -- ]
+                      | Comment      -- everything else
 
 type BrainfuckSource = [BrainfuckCommand]
 
@@ -27,6 +28,7 @@ instance Show BFSource where
               bFToChar Read      = ','
               bFToChar LoopL     = '['
               bFToChar LoopR     = ']'
+              bFToChar _         = ' '
 
 
 checkSyntax :: BrainfuckSource -> Either String BrainfuckSource
@@ -55,17 +57,20 @@ parseBrainfuck = checkSyntax . mapMaybe charToBF
             charToBF  _  = Nothing
 
 
-data Tape a = Tape [a] a [a]
+data Tape a = Tape (Stream a) a (Stream a)
+
+instance Functor Tape where
+  fmap f (Tape xs y zs) = Tape (fmap f xs) (f y) (fmap f zs)
 
 emptyTape :: Tape Int
 emptyTape = Tape zeros 0 zeros
-      where zeros = repeat 0
+      where zeros = S.repeat 0
 
 moveRight :: Tape a -> Tape a
-moveRight (Tape ls p (r:rs)) = Tape (p:ls) r rs
+moveRight (Tape ls p (Cons r rs)) = Tape (Cons p ls) r rs
 
 moveLeft :: Tape a -> Tape a
-moveLeft (Tape (l:ls) p rs) = Tape ls l (p:rs)
+moveLeft (Tape (Cons l ls) p rs) = Tape ls l (Cons p rs)
 
 main :: IO ()
 main = putStrLn "Hello World"
