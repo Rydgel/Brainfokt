@@ -15,7 +15,7 @@ data BrainfuckCommand = GoRight      -- >
                       | Read         -- ,
                       | LoopL        -- [
                       | LoopR        -- ]
-                      | Comment      -- everything else
+                      | Comment      -- Everything else
                       | Eof          -- End of file
 
 type BrainfuckSource = [BrainfuckCommand]
@@ -131,4 +131,4 @@ main = do
               where parse x = case parseBrainfuck x of
                                 (Left s) -> error s
                                 (Right bs) -> bs
-        _       -> error "bad input, it should be: brainfokt <filename.bf>"
+        _       -> error "Bad input, it should be: brainfokt <filename.bf>"
