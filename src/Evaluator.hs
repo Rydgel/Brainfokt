@@ -15,7 +15,7 @@ runBrainfuck = run emptyTape . bfSource2Tape
 
 advance :: Tape Int -> Tape BrainfuckCommand -> IO ()
 advance _ (Tape _ _ (Cons Eof _)) = return ()
-advance dataTape source = run dataTape (moveRight source)
+advance dataTape source           = run dataTape (moveRight source)
 
 run :: Tape Int -> Tape BrainfuckCommand -> IO ()
 run dataTape source@(Tape _ GoRight _) = advance (moveRight dataTape) source
