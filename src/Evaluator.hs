@@ -1,11 +1,11 @@
 module Evaluator where
 
-import           Parser
-import           Tape
+import           Data.Char   (chr, ord)
+import           Data.Stream (Stream (..))
 import qualified Data.Stream as S
-import           Data.Stream (Stream(..))
-import           Data.Char (chr, ord)
-import           System.IO (hFlush, stdout)
+import           Parser
+import           System.IO   (hFlush, stdout)
+import           Tape
 
 
 runBrainfuck :: BrainfuckSource -> IO ()
@@ -50,4 +50,3 @@ seekLoopL 1 dataTape source@(Tape _ LoopL _) = advance dataTape source
 seekLoopL b dataTape source@(Tape _ LoopL _) = seekLoopL (b-1) dataTape (moveLeft source)
 seekLoopL b dataTape source@(Tape _ LoopR _) = seekLoopL (b+1) dataTape (moveLeft source)
 seekLoopL b dataTape source                  = seekLoopL b dataTape (moveLeft source)
-

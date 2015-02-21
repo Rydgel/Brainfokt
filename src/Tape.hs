@@ -1,8 +1,8 @@
 module Tape where
 
-import           Parser
+import           Data.Stream (Stream (..), (<:>))
 import qualified Data.Stream as S
-import           Data.Stream (Stream(..), (<:>))
+import           Parser
 
 
 data Tape a = Tape (Stream a) a (Stream a)
@@ -22,4 +22,3 @@ moveRight (Tape ls p (Cons r rs)) = Tape (p <:> ls) r rs
 
 moveLeft :: Tape a -> Tape a
 moveLeft (Tape (Cons l ls) p rs) = Tape ls l (p <:> rs)
-

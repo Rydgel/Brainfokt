@@ -1,6 +1,6 @@
 module Parser where
 
-import Data.Maybe (mapMaybe)
+import           Data.Maybe (mapMaybe)
 
 
 data BrainfuckCommand = GoRight      -- >
@@ -36,7 +36,7 @@ checkSyntax xs = checkSyntax' 0 0 0 xs
     where checkSyntax' :: Int -> Int -> Int -> BrainfuckSource -> Either String BrainfuckSource
           checkSyntax' d _ e []
             | d > 0     = Left ("Bracket at pos " ++ show e ++ " is not closed.")
-            | otherwise = Right xs 
+            | otherwise = Right xs
           checkSyntax' d c _ (LoopL:ys) = checkSyntax' (d+1) (c+1) c ys
           checkSyntax' d c e (LoopR:ys)
             | d > 0     = checkSyntax' (d-1) (c+1) e ys
@@ -55,4 +55,3 @@ parseBrainfuck = checkSyntax . mapMaybe charToBF
             charToBF '[' = Just LoopL
             charToBF ']' = Just LoopR
             charToBF  _  = Nothing
-
